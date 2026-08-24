@@ -1,0 +1,19 @@
+# Compilation output
+target/
+*.class
+
+# IDE specific files
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# Node modules and build output for frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env.local
+
+# OS specific files
+.DS_Store
+Thumbs.db
