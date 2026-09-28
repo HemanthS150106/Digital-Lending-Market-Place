@@ -12,6 +12,7 @@ public class RuleTraceEntry {
 
     @ManyToOne
     @JoinColumn(name = "decision_trace_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private DecisionTrace decisionTrace;
 
     @Column(name = "rule_name", nullable = false)
@@ -20,6 +21,7 @@ public class RuleTraceEntry {
     @Column(name = "rule_type", nullable = false)
     private String ruleType; // ELIGIBILITY, PRICING
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "input_snapshot", columnDefinition = "jsonb")
     private String inputSnapshot;
 

@@ -8,44 +8,39 @@
 ## Step-by-Step Guide
 
 ### 1. Start the Environment
-Run the following command from the project root. This will build the Spring Boot application and start PostgreSQL and Adminer.
+Run the following command from the project root. This will build all containers and start the full stack.
 ```bash
 docker compose up --build -d
 ```
 
-### 2. Verify Health
-Check if the application started successfully:
-```bash
-curl http://localhost:8080/actuator/health
-```
-You should see: `{"status":"UP"}`
+### 2. Access the Application
+| Service | URL | Description |
+|---------|-----|-------------|
+| Frontend | http://localhost:3000 | React Dashboard (Login, Apply, Nominee Flow) |
+| Backend API | http://localhost:8080 | Spring Boot REST API |
+| Swagger UI | http://localhost:8080/swagger-ui.html | Interactive API Docs |
+| Adminer (DB UI) | http://localhost:8081 | Database Management |
 
-### 3. Hit Sample Endpoints
+### 3. Demo Accounts
+The system ships with three pre-seeded demo accounts:
 
-**View empty loan applications:**
-```bash
-curl http://localhost:8080/api/v1/loan-applications
-```
+| User ID | Password | Profile | Purpose |
+|---------|----------|---------|---------|
+| `alice` | `password` | $8,000/mo income, $200K property | Likely to be approved |
+| `bob` | `password` | $2,000/mo income, no property | Likely to be rejected (High Risk) |
+| `charlie` | `password` | $15,000/mo income, $500K property | Rich nominee/guarantor |
 
-**Submit an application:**
-```bash
-curl -X POST http://localhost:8080/api/v1/loan-applications \
--H "Content-Type: application/json" \
--d '{
-    "lendingApp": {"id": 1},
-    "borrowerId": "B-1001",
-    "amount": 5000.00,
-    "tenureMonths": 12,
-    "monthlyIncome": 2500.00
-}'
-```
+### 4. Testing the Full Flow
+1. Go to **http://localhost:3000** and login as `bob` / `password`.
+2. Apply for a **$50,000 loan** with a **24-month tenure**.
+3. The ML model will compute a high Probability-of-Default and reject it → status becomes `NOMINEE_REQUIRED`.
+4. Click **Refer Nominee** and enter `charlie`.
+5. **Logout**, then login as `charlie` / `password`.
+6. Charlie sees a **Pending Nominee Request**. Click **Accept & Guarantee Loan**.
+7. The system merges Bob + Charlie's financial profiles and re-runs the ML model → status flips to `APPROVED`.
+8. Click **Audit Trail** on any application to see the full ML feature-contribution breakdown (XAI).
 
-**Check the generated decision trail for the application:**
-```bash
-curl http://localhost:8080/api/v1/loan-applications/1/decision-trail
-```
-
-### 4. Database Access
+### 5. Database Access
 You can inspect the tables using Adminer:
 - **URL**: http://localhost:8081
 - **System**: PostgreSQL
@@ -54,7 +49,7 @@ You can inspect the tables using Adminer:
 - **Password**: postgres
 - **Database**: lendingdb
 
-### 5. Running Tests
+### 6. Running Tests
 To run unit tests locally (if Java/Maven are installed):
 ```bash
 mvn test

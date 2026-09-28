@@ -33,6 +33,12 @@ public class LoanApplication {
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "collateral_type")
+    private String collateralType;
+
+    @Column(name = "collateral_value")
+    private BigDecimal collateralValue;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -50,4 +56,8 @@ public class LoanApplication {
     public void setMonthlyIncome(BigDecimal monthlyIncome) { this.monthlyIncome = monthlyIncome; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getCollateralType() { return collateralType; }
+    public void setCollateralType(String collateralType) { this.collateralType = collateralType; }
+    public BigDecimal getCollateralValue() { return collateralValue; }
+    public void setCollateralValue(BigDecimal collateralValue) { this.collateralValue = collateralValue; }
 }

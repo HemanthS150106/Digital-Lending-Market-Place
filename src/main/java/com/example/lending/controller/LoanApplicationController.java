@@ -2,7 +2,16 @@ package com.example.lending.controller;
 
 import com.example.lending.domain.DecisionTrace;
 import com.example.lending.domain.LoanApplication;
+import com.example.lending.domain.NomineeRequest;
 import com.example.lending.service.LoanApplicationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +52,26 @@ public class LoanApplicationController {
         return service.getDecisionTrace(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{id}/collateral")
+    @Operation(summary = "Submit collateral for an application in COLLATERAL_REQUIRED state")
+    public ResponseEntity<LoanApplication> submitCollateral(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        String type = (String) payload.get("collateralType");
+        BigDecimal value = new BigDecimal(payload.get("collateralValue").toString());
+        return ResponseEntity.ok(service.submitCollateral(id, type, value));
+    }
+
+    @PostMapping("/{id}/nominee")
+    @Operation(summary = "Request a nominee for a loan application")
+    public ResponseEntity<NomineeRequest> requestNominee(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String nomineeId = payload.get("nomineeId");
+        return ResponseEntity.ok(service.requestNominee(id, nomineeId));
+    }
+
+    @PostMapping("/nominee-requests/{requestId}/accept")
+    @Operation(summary = "Accept a nominee request")
+    public ResponseEntity<LoanApplication> acceptNominee(@PathVariable Long requestId) {
+        return ResponseEntity.ok(service.acceptNomineeRequest(requestId));
     }
 }

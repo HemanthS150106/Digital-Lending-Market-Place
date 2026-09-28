@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-@Component
 public class MinIncomeEligibilityRule implements EligibilityRule {
 
     private static final BigDecimal MIN_INCOME_THRESHOLD = new BigDecimal("2000.00");
